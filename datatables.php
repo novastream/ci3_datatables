@@ -77,6 +77,14 @@ public function get_datatables()
     {
         $this->db->order_by('id', $order_dir);
     }
+    
+    /* Count filtered result if searching */
+    if (!empty($search))
+    {
+        $tempdb = clone $this->db;
+        $tempquery = $tempdb->get();
+        $recordsFiltered = $tempquery->num_rows();
+    }
 
     /* Limit the results and perform the query */
     $this->db->limit($limit, $start);
@@ -85,7 +93,11 @@ public function get_datatables()
 
     /* Count the results */
     $recordsTotal = $this->db->count_all_results('tbl_customer');
-    $recordsFiltered = $recordsTotal;
+    
+    if (!isset($recordsFiltered))
+    {
+        $recordsFiltered = $recordsTotal;
+    }
 
     /* Prepare the JSON data */
     $json_data = array(
