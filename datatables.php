@@ -92,7 +92,7 @@ public function get_datatables()
     $data = $query->result_array();
 
     /* Count the results */
-    $recordsTotal = $this->db->count_all_results('tbl_customer');
+    $recordsTotal = $this->db->count_all('tbl_customer');
     
     if (!isset($recordsFiltered))
     {
