@@ -60,12 +60,7 @@ public function get_datatables()
     /* If searching, use CI3 like statements */
     if (!empty($search))
     {
-        $this->db->like('id', $search);
-        $this->db->or_like('company_name', $search);
-        $this->db->or_like('company_postal_address', $search);
-        $this->db->or_like('contact_person', $search);
-        $this->db->or_like('company_email', $search);
-        $this->db->or_like('company_phone', $search);
+        $this->db->where("(company_name LIKE '%$search%' OR company_postal_address LIKE '%$search%' OR contact_person LIKE '%$search%' OR company_email LIKE '%$search%' OR company_phone LIKE '%$search%')", null, true);
     }
 
     /* Use custom order only if order_column isset and not empty */
@@ -110,5 +105,12 @@ public function get_datatables()
     );
 
     /* Use CI3 output class to display the results */        
-    $this->output->set_content_type('application/json')->set_output(json_encode($json_data));
+    $_output = json_encode($json_data);
+    $this->output->set_content_type('application/json');
+    $this->output->set_status_header('200');
+    $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate');
+    $this->output->set_header('Pragma: no-cache');
+    $this->output->set_header('Access-Control-Allow-Origin: ' . base_url());
+    $this->output->set_header('Content-Length: '. strlen($_output));
+    $this->output->set_output($_output);
 }
